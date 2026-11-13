@@ -1,0 +1,42 @@
+# PAINEL4C — versão com registro de acessos
+
+## O que faz
+- Registra IP, data/hora UTC e navegador quando alguém visita a página.
+- Mostra os registros na aba **Registro de acessos**, protegida por senha administrativa.
+- Apaga registros com mais de 30 dias.
+- Usa SQLite; os registros ficam no arquivo `access_logs.sqlite3`.
+
+## Aviso importante
+O painel deve exibir um aviso claro aos visitantes antes de coletar IP e dados do navegador. IP pode ser dado pessoal pela LGPD. Use os registros somente para finalidade legítima de segurança/auditoria, restrinja o acesso e não publique a lista de IPs.
+
+## Testar no computador (Windows / WSL / Linux)
+1. Instale Python 3 e pip.
+2. Abra um terminal na pasta do projeto.
+3. Instale dependências:
+   `python -m pip install -r requirements.txt`
+4. Defina duas senhas/chaves fortes antes de iniciar.
+
+Linux / WSL:
+```bash
+export PANEL_ADMIN_PASSWORD='coloque-uma-senha-forte-aqui'
+export PANEL_SECRET_KEY='coloque-uma-chave-aleatoria-grande-aqui'
+python server.py
+```
+
+PowerShell:
+```powershell
+$env:PANEL_ADMIN_PASSWORD = "coloque-uma-senha-forte-aqui"
+$env:PANEL_SECRET_KEY = "coloque-uma-chave-aleatoria-grande-aqui"
+python server.py
+```
+
+5. Abra `http://127.0.0.1:5000`.
+
+## Para receber acessos de outras pessoas
+O servidor precisa ficar hospedado na internet. Apenas abrir o HTML no seu PC ou enviar o arquivo não registra visitas de outras pessoas. Publique **todos** os arquivos deste pacote em um serviço de hospedagem que execute Python/Flask e mantenha armazenamento persistente para `access_logs.sqlite3`.
+Configure `PANEL_ADMIN_PASSWORD` e `PANEL_SECRET_KEY` nas variáveis de ambiente do provedor. Não coloque essas senhas no HTML nem compartilhe-as.
+
+## Limitações
+- País/localização não é coletado.
+- O IP pode ser o do proxy da hospedagem se o provedor não encaminhar corretamente o IP original. O exemplo confia em um proxy reverso; ajuste `ProxyFix` conforme a documentação do provedor.
+- O servidor registra visitas à página principal por meio da rota `/api/visit`; não é um rastreador oculto de outros sites.
