@@ -67,7 +67,7 @@ def home():
 @app.get("/api/visit")
 def register_visit():
     cleanup_old_logs()
-    ip = request.remote_addr or "desconhecido"
+    ip = request.headers.get("CF-Connecting-IP") or request.remote_addr or "desconhecido"
     # Limita o tamanho do user-agent para evitar entradas excessivas.
     user_agent = (request.headers.get("User-Agent") or "Não informado")[:300]
     timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
